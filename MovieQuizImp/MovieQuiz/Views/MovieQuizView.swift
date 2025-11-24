@@ -9,10 +9,7 @@ import SwiftUI
 
 struct MovieQuizView: View {
     
-    private let questionTitle = "Question"
-    private let questionNumber = "1/10"
-    private let questionText = "Is the rating of this movie\nless than 5?"
-    private let imageName = "Placeholder"
+    @StateObject private var viewModel = MovieQuizViewModel()
     
     var body: some View {
         ZStack {
@@ -21,13 +18,13 @@ struct MovieQuizView: View {
             
             VStack(spacing: 20) {
                 MovieQuizHeaderView(
-                    title: questionTitle,
-                    number: questionNumber
+                    title: viewModel.questionTitle,
+                    number: viewModel.questionNumber
                 )
                 
-                MoviePosterView(imageName: imageName)
+                MoviePosterView(imageName: viewModel.currentQuestion.image)
                 
-                Text(questionText)
+                Text(viewModel.questionText)
                     .font(.ysDisplayBold23)
                     .foregroundColor(.appWhite)
                     .multilineTextAlignment(.center)
