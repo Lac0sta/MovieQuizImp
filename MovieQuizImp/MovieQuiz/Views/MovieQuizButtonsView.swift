@@ -13,10 +13,10 @@ struct MovieQuizButtonsView: View {
     
     var body: some View {
         HStack(spacing: 20) {
-            Button("No", action: onNoTap)
+            Button(L10n.quizButtonNo, action: onNoTap)
                 .buttonStyle(MovieQuizPrimaryButtonStyle())
             
-            Button("Yes", action: onYesTap)
+            Button(L10n.quizButtonYes, action: onYesTap)
                 .buttonStyle(MovieQuizPrimaryButtonStyle())
         }
     }

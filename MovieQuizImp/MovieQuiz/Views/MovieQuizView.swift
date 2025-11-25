@@ -18,7 +18,7 @@ struct MovieQuizView: View {
             
             VStack(spacing: 20) {
                 MovieQuizHeaderView(
-                    title: viewModel.questionTitle,
+                    title: "\(L10n.quizHeaderTitle):",
                     number: viewModel.questionNumber
                 )
                 
