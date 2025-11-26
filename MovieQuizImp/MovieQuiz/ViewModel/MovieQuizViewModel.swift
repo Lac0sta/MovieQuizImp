@@ -13,6 +13,7 @@ final class MovieQuizViewModel: ObservableObject {
     @Published private(set) var currentQuestionIndex: Int = 0
     @Published private(set) var currentQuestion: QuizQuestion
     @Published private(set) var currentStep: QuizStepViewData
+    @Published private(set) var answerState: AnswerState = .neutral
     
     var questionNumber: String { "\(currentQuestionIndex + 1)/\(questions.count)" }
     var questionText: String { currentQuestion.text }
@@ -69,6 +70,21 @@ final class MovieQuizViewModel: ObservableObject {
             question: firstQuestion.text,
             questionNumber: "1/\(questions.count)"
         )
+    }
+    
+    func yesButtonTapped() {
+        handleAnswer(givenAnswer: true)
+    }
+    
+    func noButtonTapped() {
+        handleAnswer(givenAnswer: false)
+    }
+    
+    private func handleAnswer(givenAnswer: Bool) {
+        let correctAnswer = currentQuestion.correctAnswer
+        let isCorrect = (givenAnswer == correctAnswer)
+        
+        answerState = isCorrect ? .correct : .wrong
     }
     
     private func convert(question: QuizQuestion) -> QuizStepViewData {

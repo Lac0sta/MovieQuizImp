@@ -11,9 +11,20 @@ struct MovieQuizView: View {
     
     @StateObject private var viewModel = MovieQuizViewModel()
     
+    private var borderColor: Color {
+        switch viewModel.answerState {
+        case .neutral:
+            return .clear
+        case .correct:
+            return .appGreen
+        case .wrong:
+            return .appRed
+        }
+    }
+    
     var body: some View {
         ZStack {
-            Color.appBackground
+            Color.appBlack
                 .ignoresSafeArea()
             
             VStack(spacing: 20) {
@@ -23,6 +34,14 @@ struct MovieQuizView: View {
                 )
                 
                 MoviePosterView(imageName: viewModel.currentStep.imageName)
+                    .overlay(
+                        Group {
+                            if viewModel.answerState != .neutral {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(borderColor, lineWidth: 8)
+                            }
+                        }
+                    )
                 
                 Text(viewModel.questionText)
                     .font(.ysDisplayBold23)
@@ -31,8 +50,8 @@ struct MovieQuizView: View {
                     .lineLimit(2)
                 
                 MovieQuizButtonsView(
-                    onYesTap: { print("Yes tapped") },
-                    onNoTap: { print("No tapped") }
+                    onYesTap: { viewModel.yesButtonTapped() },
+                    onNoTap: { viewModel.noButtonTapped() }
                 )
             }
             .padding(.horizontal, 20)

@@ -16,9 +16,5 @@ struct MoviePosterView: View {
             .frame(maxWidth: .infinity)
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 20))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.appWhite, lineWidth: 8)
-            )
     }
 }
