@@ -11,7 +11,7 @@ struct MoviePosterView: View {
     let imageName: String
     
     var body: some View {
-        Image(imageName)
+        Image(imageName.isEmpty ? "Placeholder" : imageName)
             .resizable()
             .frame(maxWidth: .infinity)
             .clipped()

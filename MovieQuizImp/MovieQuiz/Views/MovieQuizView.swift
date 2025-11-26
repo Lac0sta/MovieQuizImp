@@ -19,10 +19,10 @@ struct MovieQuizView: View {
             VStack(spacing: 20) {
                 MovieQuizHeaderView(
                     title: "\(L10n.quizHeaderTitle):",
-                    number: viewModel.questionNumber
+                    number: viewModel.currentStep.questionNumber
                 )
                 
-                MoviePosterView(imageName: viewModel.currentQuestion.image)
+                MoviePosterView(imageName: viewModel.currentStep.imageName)
                 
                 Text(viewModel.questionText)
                     .font(.ysDisplayBold23)

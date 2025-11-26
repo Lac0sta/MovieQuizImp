@@ -12,10 +12,10 @@ final class MovieQuizViewModel: ObservableObject {
     
     @Published private(set) var currentQuestionIndex: Int = 0
     @Published private(set) var currentQuestion: QuizQuestion
+    @Published private(set) var currentStep: QuizStepViewData
     
     var questionNumber: String { "\(currentQuestionIndex + 1)/\(questions.count)" }
     var questionText: String { currentQuestion.text }
-    var currentImage: String { currentQuestion.image.isEmpty ? "Placeholder" : currentQuestion.image }
     
     private let questions: [QuizQuestion] = [
         QuizQuestion(
@@ -61,6 +61,27 @@ final class MovieQuizViewModel: ObservableObject {
     ]
     
     init() {
-        self.currentQuestion = questions[0]
+        let firstQuestion = questions[0]
+        self.currentQuestion = firstQuestion
+        
+        self.currentStep = QuizStepViewData(
+            imageName: firstQuestion.image,
+            question: firstQuestion.text,
+            questionNumber: "1/\(questions.count)"
+        )
+    }
+    
+    private func convert(question: QuizQuestion) -> QuizStepViewData {
+        return QuizStepViewData(
+            imageName: question.image,
+            question: question.text,
+            questionNumber: questionNumber
+        )
+    }
+    
+    private func show(questionAt index: Int) {
+        currentQuestionIndex = index
+        let question = questions[index]
+        currentStep = convert(question: question)
     }
 }
