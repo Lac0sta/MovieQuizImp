@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 final class MovieQuizViewModel: ObservableObject {
     
     @Published private(set) var currentQuestionIndex: Int = 0
@@ -85,6 +86,8 @@ final class MovieQuizViewModel: ObservableObject {
         let isCorrect = (givenAnswer == correctAnswer)
         
         answerState = isCorrect ? .correct : .wrong
+        
+        waitForNextQuestion()
     }
     
     private func convert(question: QuizQuestion) -> QuizStepViewData {
@@ -98,6 +101,41 @@ final class MovieQuizViewModel: ObservableObject {
     private func show(questionAt index: Int) {
         currentQuestionIndex = index
         let question = questions[index]
+        currentQuestion = question
         currentStep = convert(question: question)
+        answerState = .neutral
+    }
+    
+    private func showNextQuestionOrResult() {
+        let isLastQuestion = currentQuestionIndex == (questions.count - 1)
+        
+        if isLastQuestion {
+            // TO DO: result message
+            restartQuiz()
+        } else {
+            let nextIndex = currentQuestionIndex + 1
+            show(questionAt: nextIndex)
+        }
+    }
+    
+    private func waitForNextQuestion() {
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            showNextQuestionOrResult()
+        }
+    }
+    
+    private func restartQuiz() {
+        currentQuestionIndex = 0
+        let firstQuestion = questions[0]
+        currentQuestion = firstQuestion
+        
+        currentStep = QuizStepViewData(
+            imageName: firstQuestion.image,
+            question: firstQuestion.text,
+            questionNumber: "1/\(questions.count)"
+        )
+        
+        answerState = .neutral
     }
 }
