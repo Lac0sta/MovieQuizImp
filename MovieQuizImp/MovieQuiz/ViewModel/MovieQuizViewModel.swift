@@ -15,6 +15,9 @@ final class MovieQuizViewModel: ObservableObject {
     @Published private(set) var currentQuestion: QuizQuestion
     @Published private(set) var currentStep: QuizStepViewData
     @Published private(set) var answerState: AnswerState = .neutral
+    @Published private(set) var correctAnswersCount: Int = 0
+    @Published var isShowingResults: Bool = false
+    @Published var resultsMessage: String = ""
     
     var questionNumber: String { "\(currentQuestionIndex + 1)/\(questions.count)" }
     var questionText: String { currentQuestion.text }
@@ -81,11 +84,34 @@ final class MovieQuizViewModel: ObservableObject {
         handleAnswer(givenAnswer: false)
     }
     
+    func restartQuiz() {
+        currentQuestionIndex = 0
+        correctAnswersCount = 0
+        
+        let firstQuestion = questions[0]
+        currentQuestion = firstQuestion
+        
+        currentStep = QuizStepViewData(
+            imageName: firstQuestion.image,
+            question: firstQuestion.text,
+            questionNumber: "1/\(questions.count)"
+        )
+        
+        answerState = .neutral
+        isShowingResults = false
+        resultsMessage = ""
+    }
+    
     private func handleAnswer(givenAnswer: Bool) {
         let correctAnswer = currentQuestion.correctAnswer
         let isCorrect = (givenAnswer == correctAnswer)
         
-        answerState = isCorrect ? .correct : .wrong
+        if isCorrect {
+            correctAnswersCount += 1
+            answerState = .correct
+        } else {
+            answerState = .wrong
+        }
         
         waitForNextQuestion()
     }
@@ -110,8 +136,8 @@ final class MovieQuizViewModel: ObservableObject {
         let isLastQuestion = currentQuestionIndex == (questions.count - 1)
         
         if isLastQuestion {
-            // TO DO: result message
-            restartQuiz()
+            resultsMessage = "\(L10n.quizResultText): \(correctAnswersCount)/\(questions.count)"
+            isShowingResults = true
         } else {
             let nextIndex = currentQuestionIndex + 1
             show(questionAt: nextIndex)
@@ -123,19 +149,5 @@ final class MovieQuizViewModel: ObservableObject {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             showNextQuestionOrResult()
         }
-    }
-    
-    private func restartQuiz() {
-        currentQuestionIndex = 0
-        let firstQuestion = questions[0]
-        currentQuestion = firstQuestion
-        
-        currentStep = QuizStepViewData(
-            imageName: firstQuestion.image,
-            question: firstQuestion.text,
-            questionNumber: "1/\(questions.count)"
-        )
-        
-        answerState = .neutral
     }
 }

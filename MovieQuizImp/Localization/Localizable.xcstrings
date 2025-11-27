@@ -1,6 +1,23 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "qiuz_result_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This round is over"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот раунд окончен"
+          }
+        }
+      }
+    },
     "quiz_button_no" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -65,6 +82,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Рейтинг этого фильма больше чем 6?"
+          }
+        }
+      }
+    },
+    "quiz_restart_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play again"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сыграть ещё раз"
+          }
+        }
+      }
+    },
+    "quiz_result_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your result"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваш результат"
           }
         }
       }

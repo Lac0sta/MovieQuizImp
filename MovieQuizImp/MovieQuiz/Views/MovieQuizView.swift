@@ -58,5 +58,15 @@ struct MovieQuizView: View {
             .padding(.top, 10)
             .padding(.bottom, 0)
         }
+        .alert(
+            L10n.quizResultTitle,
+            isPresented: $viewModel.isShowingResults,
+        ) {
+            Button(L10n.quizResultButton) {
+                viewModel.restartQuiz()
+            }
+        } message: {
+            Text(viewModel.resultsMessage)
+        }
     }
 }
