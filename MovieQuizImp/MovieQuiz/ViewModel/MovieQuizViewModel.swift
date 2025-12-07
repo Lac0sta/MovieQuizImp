@@ -16,6 +16,7 @@ final class MovieQuizViewModel: ObservableObject {
     @Published private(set) var currentStep: QuizStepViewData
     @Published private(set) var answerState: AnswerState = .neutral
     @Published private(set) var correctAnswersCount: Int = 0
+    @Published private(set) var areButtonsEnabled: Bool = true
     @Published var isShowingResults: Bool = false
     @Published var resultsMessage: String = ""
     
@@ -100,9 +101,13 @@ final class MovieQuizViewModel: ObservableObject {
         answerState = .neutral
         isShowingResults = false
         resultsMessage = ""
+        areButtonsEnabled = true
     }
     
     private func handleAnswer(givenAnswer: Bool) {
+        guard areButtonsEnabled else { return }
+        areButtonsEnabled = false
+        
         let correctAnswer = currentQuestion.correctAnswer
         let isCorrect = (givenAnswer == correctAnswer)
         
@@ -130,6 +135,7 @@ final class MovieQuizViewModel: ObservableObject {
         currentQuestion = question
         currentStep = convert(question: question)
         answerState = .neutral
+        areButtonsEnabled = true
     }
     
     private func showNextQuestionOrResult() {

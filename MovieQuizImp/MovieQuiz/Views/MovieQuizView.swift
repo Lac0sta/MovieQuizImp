@@ -53,6 +53,7 @@ struct MovieQuizView: View {
                     onYesTap: { viewModel.yesButtonTapped() },
                     onNoTap: { viewModel.noButtonTapped() }
                 )
+                .allowsHitTesting(viewModel.areButtonsEnabled)
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
