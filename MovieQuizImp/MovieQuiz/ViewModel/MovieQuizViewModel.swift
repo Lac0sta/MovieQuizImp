@@ -20,60 +20,21 @@ final class MovieQuizViewModel: ObservableObject {
     @Published var isShowingResults: Bool = false
     @Published var resultsMessage: String = ""
     
-    var questionNumber: String { "\(currentQuestionIndex + 1)/\(questions.count)" }
+    var questionNumber: String { "\(currentQuestionIndex + 1)/\(Constants.questionsAmount)" }
     var questionText: String { currentQuestion.text }
     
-    private let questions: [QuizQuestion] = [
-        QuizQuestion(
-            image: "The Godfather",
-            text: L10n.quizQuestionText,
-            correctAnswer: true),
-        QuizQuestion(
-            image: "The Dark Knight",
-            text: L10n.quizQuestionText,
-            correctAnswer: true),
-        QuizQuestion(
-            image: "Kill Bill",
-            text: L10n.quizQuestionText,
-            correctAnswer: true),
-        QuizQuestion(
-            image: "The Avengers",
-            text: L10n.quizQuestionText,
-            correctAnswer: true),
-        QuizQuestion(
-            image: "Deadpool",
-            text: L10n.quizQuestionText,
-            correctAnswer: true),
-        QuizQuestion(
-            image: "The Green Knight",
-            text: L10n.quizQuestionText,
-            correctAnswer: true),
-        QuizQuestion(
-            image: "Old",
-            text: L10n.quizQuestionText,
-            correctAnswer: false),
-        QuizQuestion(
-            image: "The Ice Age Adventures of Buck Wild",
-            text: L10n.quizQuestionText,
-            correctAnswer: false),
-        QuizQuestion(
-            image: "Tesla",
-            text: L10n.quizQuestionText,
-            correctAnswer: false),
-        QuizQuestion(
-            image: "Vivarium",
-            text: L10n.quizQuestionText,
-            correctAnswer: false)
-    ]
+    private let questionGenerator: QuestionGeneratorProtocol = QuestionGenerator()
     
     init() {
-        let firstQuestion = questions[0]
-        self.currentQuestion = firstQuestion
+        guard let firstQuestion = questionGenerator.requestNextQuestion() else {
+            fatalError("QuestionGenerator returned no questions on first request")
+        }
         
+        self.currentQuestion = firstQuestion
         self.currentStep = QuizStepViewData(
             imageName: firstQuestion.image,
             question: firstQuestion.text,
-            questionNumber: "1/\(questions.count)"
+            questionNumber: "1/\(Constants.questionsAmount)"
         )
     }
     
@@ -89,14 +50,15 @@ final class MovieQuizViewModel: ObservableObject {
         currentQuestionIndex = 0
         correctAnswersCount = 0
         
-        let firstQuestion = questions[0]
-        currentQuestion = firstQuestion
-        
-        currentStep = QuizStepViewData(
-            imageName: firstQuestion.image,
-            question: firstQuestion.text,
-            questionNumber: "1/\(questions.count)"
-        )
+        if let firstQuestion = questionGenerator.requestNextQuestion() {
+            currentQuestion = firstQuestion
+            
+            currentStep = QuizStepViewData(
+                imageName: firstQuestion.image,
+                question: firstQuestion.text,
+                questionNumber: "1/\(Constants.questionsAmount)"
+            )
+        }
         
         answerState = .neutral
         isShowingResults = false
@@ -129,9 +91,7 @@ final class MovieQuizViewModel: ObservableObject {
         )
     }
     
-    private func show(questionAt index: Int) {
-        currentQuestionIndex = index
-        let question = questions[index]
+    private func show(question: QuizQuestion) {
         currentQuestion = question
         currentStep = convert(question: question)
         answerState = .neutral
@@ -139,14 +99,18 @@ final class MovieQuizViewModel: ObservableObject {
     }
     
     private func showNextQuestionOrResult() {
-        let isLastQuestion = currentQuestionIndex == (questions.count - 1)
+        let isLastQuestion = currentQuestionIndex == (Constants.questionsAmount - 1)
         
         if isLastQuestion {
-            resultsMessage = "\(L10n.quizResultText): \(correctAnswersCount)/\(questions.count)"
+            resultsMessage = "\(L10n.quizResultText): \(correctAnswersCount)/\(Constants.questionsAmount)"
             isShowingResults = true
         } else {
-            let nextIndex = currentQuestionIndex + 1
-            show(questionAt: nextIndex)
+            currentQuestionIndex += 1
+            
+            if let nextQuestion = questionGenerator.requestNextQuestion() {
+                currentQuestion = nextQuestion
+                show(question: nextQuestion)
+            }
         }
     }
     
